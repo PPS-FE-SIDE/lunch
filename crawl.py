@@ -8,11 +8,22 @@ from selenium.webdriver.common.keys import Keys
 
 def get_menus ():
     menus = {}
-    names = driver.find_elements(By.CSS_SELECTOR, "#mArticle > div.cont_menu > ul > li > div > span")
-    prices = driver.find_elements(By.CSS_SELECTOR, "#mArticle > div.cont_menu > ul > li > div > em.price_menu")
+    try:
+        more_button = driver.find_element(By.CSS_SELECTOR, '#mArticle > div.cont_menu > a')
+        more_button.send_keys(Keys.ENTER)
+    except:
+        print('hi')
+
+    names = driver.find_elements(By.XPATH, '//*[@id="mArticle"]/div/ul/li/div/span')
+    prices = driver.find_elements(By.XPATH, '//*[@id="mArticle"]/div/ul/li/div/em')
+    prices2 = driver.find_elements(By.CSS_SELECTOR, 'em.price_menu')
+
 
     for i in range(len(names)):
-        menus[names[i].text] = prices[i].text
+        if prices[i].text != '':
+            menus[names[i].text] = prices[i].text
+        else:
+            menus[names[i].text] = prices2[i].text
 
     return menus
 
@@ -52,7 +63,7 @@ def main_def (menus, page):
       print(titles[i].text)
       title = titles[i].text
       details[i].send_keys(Keys.ENTER)
-      time.sleep(2)
+      time.sleep(3)
       driver.switch_to.window(driver.window_handles[-1])
       menus[title] = get_menus()
       print(menus)
