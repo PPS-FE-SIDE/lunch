@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
-
+import json
 
 def get_menus ():
     menus = {}
@@ -18,12 +18,15 @@ def get_menus ():
     prices = driver.find_elements(By.XPATH, '//*[@id="mArticle"]/div/ul/li/div/em')
     prices2 = driver.find_elements(By.CSS_SELECTOR, 'em.price_menu')
 
+    menus['메뉴'] = []
+    menus['가격'] = []
 
     for i in range(len(names)):
+        menus['메뉴'].append(names[i].text)
         if prices[i].text != '':
-            menus[names[i].text] = prices[i].text
+            menus['가격'].append(prices[i].text)
         else:
-            menus[names[i].text] = prices2[i].text
+            menus['가격'].append(prices2[i].text)
 
     return menus
 
@@ -44,13 +47,13 @@ def main_def (menus, page):
         more_place = driver.find_element(By.CSS_SELECTOR, "#info\.search\.place\.more")
         more_place.send_keys(Keys.ENTER)
         print('succeed', 'page = ', page)
-        time.sleep(2)
+        time.sleep(3)
 
     if page > 1:
         next_button = driver.find_element(By.CSS_SELECTOR, "#info\.search\.page\.next")
         next_button.send_keys(Keys.ENTER)
         print('succeed', 'page = ', page)
-        time.sleep(2)
+        time.sleep(3)
 
     if page > 10:
         return menus
@@ -77,6 +80,9 @@ def main_def (menus, page):
 
 result = main_def(menus, page)
 print(result)
+
+with open('../', 'w') as outfile:
+    json.dump(result, outfile, indent=4)
 
 # more_place = driver.find_element(By.CSS_SELECTOR, "#info\.search\.place\.more")
 #
