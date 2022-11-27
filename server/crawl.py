@@ -6,6 +6,13 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 import json
 
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("headless")
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+driver.get("https://map.kakao.com/?q=%EC%9D%B4%EB%8F%84%EA%B3%B0%ED%83%95%20%EB%B3%B8%EC%A0%90%20%EA%B7%BC%EC%B2%98%20%EC%8B%9D%EB%8B%B9")
+
+time.sleep(3)
+
 def get_menus ():
     menus = {}
     try:
@@ -32,17 +39,8 @@ def get_menus ():
 
 
 
-chrome_options = webdriver.ChromeOptions()
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-driver.get("https://map.kakao.com/?q=%EC%9D%B4%EB%8F%84%EA%B3%B0%ED%83%95%20%EB%B3%B8%EC%A0%90%20%EA%B7%BC%EC%B2%98%20%EC%8B%9D%EB%8B%B9")
 
-time.sleep(3)
-
-
-menus = {}
-page = 0
-
-def main_def (menus, page):
+def crawl (menus, title_arr, page, goal):
     if page == 1:
         more_place = driver.find_element(By.CSS_SELECTOR, "#info\.search\.place\.more")
         more_place.send_keys(Keys.ENTER)
@@ -55,12 +53,13 @@ def main_def (menus, page):
         print('succeed', 'page = ', page)
         time.sleep(3)
 
-    if page > 10:
-        return menus
+    if page > goal:
+        return {menus, title_arr}
 
 
     titles = driver.find_elements(By.CSS_SELECTOR, "a.link_name")
     details = driver.find_elements(By.CSS_SELECTOR, "div.contact.clickArea > a.moreview")
+    new_titles = title_arr + titles
 
     for i in range(len(titles)):
       print(titles[i].text)
@@ -68,21 +67,21 @@ def main_def (menus, page):
       details[i].send_keys(Keys.ENTER)
       time.sleep(3)
       driver.switch_to.window(driver.window_handles[-1])
-      menus[title] = get_menus()
-      print(menus)
+      try:
+        menus[title] = get_menus()
+      except:
+        print('이런')
+
       driver.close()
       driver.switch_to.window(driver.window_handles[0])
       print('hi')
 
     page += 1
 
-    main_def(menus, page)
+    crawl(menus, new_titles, page, goal)
 
-result = main_def(menus, page)
-print(result)
 
-with open('../', 'w') as outfile:
-    json.dump(result, outfile, indent=4)
+
 
 # more_place = driver.find_element(By.CSS_SELECTOR, "#info\.search\.place\.more")
 #
@@ -102,8 +101,18 @@ with open('../', 'w') as outfile:
 
 
 
+def main():
 
 
 
+    menus = {}
+    title_arr = []
+    page = 0
 
-driver.quit()
+    result = crawl(menus, title_arr, page, 0)
+    print(result)
+
+    driver.quit()
+
+
+main()
