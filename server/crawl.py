@@ -81,6 +81,8 @@ def crawl (menus, title_arr, page, goal):
       except:
         print('이런')
 
+#       menus[title] = get_menus(title)
+
       driver.close()
       driver.switch_to.window(driver.window_handles[0])
       print('hi')
