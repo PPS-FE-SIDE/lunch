@@ -1,9 +1,16 @@
 import React from 'react'
 import './App.css'
 
-import axios from 'axios'
-
+const navi = ['1', '2', '3']
+const footerText = ['4', '5', '6']
+const btn = () => {
+  const random = Math.floor(Math.random() * 11)
+  console.log(random)
+}
 const App = () => {
+  React.useEffect(() => {
+    axios.get('http://127.0.0.1:8000/').then((res) => console.log(res))
+  }, [])
   return (
     <div>
       <header style={{ width: '100%', height: 70, marginTop: 50 }}>
