@@ -4,6 +4,9 @@ import './App.css'
 import axios from 'axios'
 
 const App = () => {
+  React.useEffect(() => {
+    axios.get('http://127.0.0.1:8000/').then((res) => console.log(res))
+  }, [])
   return (
     <div>
       <header style={{ width: '100%', height: 70, marginTop: 50 }}>
