@@ -1,5 +1,6 @@
 import React from 'react'
 import './App.css'
+import axios from 'axios'
 
 const navi = ['1', '2', '3']
 const footerText = ['4', '5', '6']
