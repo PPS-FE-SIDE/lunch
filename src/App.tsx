@@ -1,8 +1,12 @@
 import React from 'react'
 import './App.css'
 
-import axios from 'axios'
-
+const navi = ['1', '2', '3']
+const footerText = ['4', '5', '6']
+const btn = () => {
+  const random = Math.floor(Math.random() * 11)
+  console.log(random)
+}
 const App = () => {
   return (
     <div>
