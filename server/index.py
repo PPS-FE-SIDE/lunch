@@ -1,15 +1,25 @@
-from flask import Flask
+from flask import Flask, Response
+import pymysql
+import json
+
+conn = pymysql.connect(host='127.0.0.1', user='root', password='1234', db="lunch_db")
+cur = conn.cursor()
+
+cur.execute("select * from store")
+result = cur.fetchall()
+response_data = []
+
+for data in result:
+    response_data.append({"name": data[1]})
+
+response_json = json.dumps({"store": response_data})
+print(response_json)
+
+
 app = Flask(__name__)
-@app.route('/')
-@app.route('/home')
+@app.route('/', methods=['GET'])
 def home():
-    return '''
-    <h1>이건 h1 제목</h1>
-    <p>이건 p 본문 </p>
-    <a href="https://flask.palletsprojects.com">Flask 홈페이지 바로가기</a>
-    '''
-@app.route('/user/<user_name>/<int:user_id>')
-def user(user_name, user_id):
-    return f'Hello, {user_name}({user_id})!'
+    return Response(response_json, mimetype="application/json", status=200)
+
 if __name__ == '__main__':
     app.run(port=8000, debug=True)
