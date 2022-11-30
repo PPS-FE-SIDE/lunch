@@ -6,13 +6,35 @@ const App = () => {
     const random = Math.floor(Math.random() * 11)
     console.log(random)
   }
+  const navi = ['Home', 'Help', 'Order History']
+  const footerText = ['Discover', 'Restaurant', 'Stores']
 
   return (
-    <>
-      <header style={{ width: '100%', height: 100, backgroundColor: 'tomato' }} />
-      <div style={{ width: '100%' }}>
+    <div>
+      <header style={{ width: '100%', height: 70, marginTop: 50 }}>
+        <div style={{ width: 1200, height: '100%', margin: '0 auto', display: 'flex' }}>
+          <div style={{ width: 200 }}>
+            <div style={{ width: 200, height: 42, marginTop: 13 }}>
+              <img src='/logo.png' />
+            </div>
+          </div>
+          <div style={{ width: 800, alignItems: 'center', display: 'flex' }}>
+            <ul>
+              {navi.map((item, index) => (
+                <li key={index} style={{ paddingLeft: 30, display: 'inline-block' }}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div style={{ width: 200, fontWeight: 'bold', fontSize: 25, display: 'flex', alignItems: 'center' }}>
+            LOG IN
+          </div>
+        </div>
+      </header>
+      <div style={{ width: '100%', height: 420, backgroundColor: '#efefef' }}>
         <div style={{ width: 1200, display: 'flex', margin: '0 auto' }}>
-          <div style={{ width: '40%', height: 500, backgroundColor: '#efefef', display: 'flex' }}>
+          <div style={{ width: '40%', height: 500, display: 'flex' }}>
             <div
               style={{
                 width: '80%',
@@ -20,7 +42,7 @@ const App = () => {
 
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: 'yellow',
+
                 alignItems: 'center',
               }}
             >
@@ -55,8 +77,26 @@ const App = () => {
           </div>
         </div>
       </div>
-      <footer style={{ width: '100%', height: 100, backgroundColor: 'tomato' }} />
-    </>
+      <footer style={{ width: '100%', height: 100 }}>
+        <div
+          style={{
+            height: 100,
+            alignItems: 'center',
+            display: 'flex',
+
+            justifyContent: 'center',
+          }}
+        >
+          <ul>
+            {footerText.map((item, index) => (
+              <li key={index} style={{ paddingLeft: 30, display: 'inline-block', fontWeight: 'bold' }}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </footer>
+    </div>
   )
 }
 
