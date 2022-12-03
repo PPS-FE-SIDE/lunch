@@ -70,6 +70,7 @@ def crawl (menus, title_arr, page, goal):
 
     for i in range(len(titles)):
       print(titles[i].text)
+      cur.execute('insert into store(name) values({})'.format('"' + titles[i].text + '"'))
       title = titles[i].text
       title_arr.append(title)
       print(title)
@@ -86,7 +87,7 @@ def crawl (menus, title_arr, page, goal):
       driver.close()
       driver.switch_to.window(driver.window_handles[0])
       print('hi')
-
+    conn.commit()
     page += 1
 
     crawl(menus, title_arr, page, goal)
@@ -120,7 +121,7 @@ def main():
     title_arr = []
     page = 0
 
-    crawl(menus, title_arr, page, 10)
+    crawl(menus, title_arr, page, 15)
 
     conn.commit()
     driver.quit()
