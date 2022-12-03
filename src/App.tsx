@@ -1,19 +1,43 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 const navi = ['1', '2', '3']
 const footerText = ['4', '5', '6']
-const btn = () => {
-  const random = Math.floor(Math.random() * 11)
-  console.log(random)
+
+type menuType = {
+  menu: string[]
+  price: string[]
 }
+
+type responseDataType = {
+  [key: string]: menuType[]
+}
+
 const App = () => {
+  const [store, setStore] = useState<responseDataType | null>(null)
+  const [selectedStore, setSelectedStore] = useState<responseDataType | null>(null)
   React.useEffect(() => {
-    axios.get('http://127.0.0.1:8000/').then((res) => console.log(res))
+    axios.get('http://127.0.0.1:8000/').then((res: AxiosResponse<responseDataType>) => {
+      console.log(res.data)
+      const { data } = res
+      setStore(data)
+    })
   }, [])
+  React.useEffect(() => {
+    console.log(selectedStore)
+  }, [selectedStore])
+
+  const btn = () => {
+    if (!store) return
+    const storeKeys = Object.keys(store)
+    const random = Math.floor(Math.random() * storeKeys.length)
+    const storeName = storeKeys[random]
+    const menu = store[storeName]
+    setSelectedStore({ [storeName]: menu })
+  }
   return (
-    <div>
+    <>
       <header style={{ width: '100%', height: 70, marginTop: 50 }}>
         <div style={{ width: 1200, height: '100%', margin: '0 auto', display: 'flex' }}>
           <div style={{ width: 200 }}>
@@ -35,9 +59,9 @@ const App = () => {
           </div>
         </div>
       </header>
-      <div style={{ width: '100%', height: 420, backgroundColor: '#efefef' }}>
+      <main style={{ width: '100%', height: 420, backgroundColor: '#efefef' }}>
         <div style={{ width: 1200, display: 'flex', margin: '0 auto' }}>
-          <div style={{ width: '40%', height: 500, display: 'flex' }}>
+          <div style={{ width: '40%', height: 420, display: 'flex' }}>
             <div
               style={{
                 width: '80%',
@@ -73,33 +97,46 @@ const App = () => {
               </div>
             </div>
           </div>
-          <div style={{ width: '60%', height: 500 }}>
-            <div style={{ width: '88%', marginLeft: '6%', marginRight: '6%', height: '100%', overflow: 'hidden' }}>
-              <img src='/delivery.jpg' alt='사진공간' />
-            </div>
+          <div style={{ width: '60%', height: 420 }}>
+            {selectedStore ? (
+              <ul>
+                <li>{Object.keys(selectedStore)[0]}</li>
+                {selectedStore[Object.keys(selectedStore)[0]].map((item, index) => {
+                  return (
+                    <li key={item.menu + String(index)}>
+                      <span>{item.menu}</span>
+                      <span>{item.price}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <div style={{ width: '88%', marginLeft: '6%', marginRight: '6%', height: '100%', overflow: 'hidden' }}>
+                <img src='/delivery.jpg' alt='사진공간' />
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </main>
       <footer style={{ width: '100%', height: 100 }}>
         <div
           style={{
             height: 100,
             alignItems: 'center',
             display: 'flex',
-
             justifyContent: 'center',
           }}
         >
           <ul>
             {footerText.map((item, index) => (
-              <li key={index} style={{ paddingLeft: 30, display: 'inline-block', fontWeight: 'bold' }}>
+              <li key={index + item} style={{ paddingLeft: 30, display: 'inline-block', fontWeight: 'bold' }}>
                 {item}
               </li>
             ))}
           </ul>
         </div>
       </footer>
-    </div>
+    </>
   )
 }
 
